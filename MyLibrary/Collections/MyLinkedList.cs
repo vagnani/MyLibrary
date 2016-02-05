@@ -71,29 +71,44 @@ namespace MyLibrary.Collections
         }
     }
 
-    internal class MyEnumerator<T, TK> : IEnumerator<MyLinkedListNode<T, TK>>
+    public class MyEnumerator<T, TK> : IEnumerator<MyLinkedListNode<T, TK>>
     {
-        MyLinkedList<T, TK> mylink;
-        private List<int>
+        private List<MyLinkedListNode<T, TK>> _head;
+        private MyLinkedListNode<T, TK> _current;        
+        private Dictionary<int, List<int>> _multipleIndex;
+        private int _currentIndex = 0;
+        private bool stop = false;
+        
+        //ricordarsi di aumentare _currentIndex
 
         public MyEnumerator(MyLinkedList<T,TK> mylink)
         {
-            this.mylink = mylink;
-        }
+            this._head = mylink._head;
+            int _countHead = _head.Count-1;
+                        
+            for(int n=0;n<=_countHead;n++)
+            {
+                _multipleIndex.Add(n, new List<int>());
+            }
+        }        
 
         public MyLinkedListNode<T, TK> Current
         {
             get
             {
-                throw new NotImplementedException();
+                if(!stop)
+                {
+                    return _current;
+                }
+
+                throw new IndexOutOfRangeException();
             }
         }
-
         object IEnumerator.Current
         {
             get
             {
-                throw new NotImplementedException();
+                return Current;
             }
         }
 
@@ -104,12 +119,44 @@ namespace MyLibrary.Collections
 
         public bool MoveNext()
         {
-            throw new NotImplementedException();
+            if(!IsLast())
+            {
+                SetNext();
+                return true;
+            }
+
+            stop = true;
+            return false;
+        }
+
+        private void SetNext()
+        {
+            
+        }
+
+        private bool IsLast()
+        {
+            var lastNodeHead = _head[_head.Count - 1];
+            int indexLast = lastNodeHead.PreviousCount - 1;
+            var last = lastNodeHead[indexLast];
+
+            if(_current.Equals(last))
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void Reset()
         {
-            throw new NotImplementedException();
+            _multipleIndex = null;
+            int _countHead = _head.Count - 1;
+
+            for (int n = 0; n <= _countHead; n++)
+            {
+                _multipleIndex.Add(n, new List<int>());
+            }
         }
     }
 
@@ -168,6 +215,22 @@ namespace MyLibrary.Collections
                 }
 
                 return _prev[(-index)];
+            }
+        }
+
+        public int NextCount
+        {
+            get
+            {
+                return _next.Count;
+            }
+        }
+
+        public int PreviousCount
+        {
+            get
+            {
+                return _prev.Count;
             }
         }
     }
