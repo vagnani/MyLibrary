@@ -140,7 +140,9 @@ namespace MyLibrary.Collections
                 _followingIndex = null;_followingIndex = new List<int>();
             }
 
-            var currentNode = _head[_currentIndexHead];            
+            var currentNode = _head[_currentIndexHead];
+            //numero di elementi passati
+            int position = -1;         
 
             while(true)
             {
@@ -150,7 +152,12 @@ namespace MyLibrary.Collections
                 {
                     break;
                 }
-                                
+                position++;
+                if(_followingIndex.Count<=position)
+                {
+                    _followingIndex.Add(0);
+                    _current.Add(currentNode);
+                }
                 
             }
         }
