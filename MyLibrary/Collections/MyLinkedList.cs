@@ -71,13 +71,14 @@ namespace MyLibrary.Collections
         }
     }
 
-    public class MyEnumerator<T, TK> : IEnumerator<MyLinkedListNode<T, TK>>
+    public class MyEnumerator<T, TK> : IEnumerator<List<MyLinkedListNode<T, TK>>>
     {
         private List<MyLinkedListNode<T, TK>> _head;
-        private MyLinkedListNode<T, TK> _current;        
-        private Dictionary<int, List<int>> _multipleIndex;
-        private int _currentIndex = 0;
+        private List<MyLinkedListNode<T, TK>> _current;        
+        private List<int> _followingIndex;
+        private int _currentIndexHead = -1;
         private bool stop = false;
+        private bool changeIndexHead = false;
         
         //ricordarsi di aumentare _currentIndex
 
@@ -88,27 +89,28 @@ namespace MyLibrary.Collections
                         
             for(int n=0;n<=_countHead;n++)
             {
-                _multipleIndex.Add(n, new List<int>());
+                _followingIndex.Add(n);
             }
         }        
+        
 
-        public MyLinkedListNode<T, TK> Current
-        {
-            get
-            {
-                if(!stop)
-                {
-                    return _current;
-                }
-
-                throw new IndexOutOfRangeException();
-            }
-        }
         object IEnumerator.Current
         {
             get
             {
                 return Current;
+            }
+        }
+        public List<MyLinkedListNode<T, TK>> Current
+        {
+            get
+            {
+                if (!stop)
+                {
+                    return _current;
+                }
+
+                throw new IndexOutOfRangeException();
             }
         }
 
@@ -121,7 +123,8 @@ namespace MyLibrary.Collections
         {
             if(!IsLast())
             {
-                SetNext();
+                _current = null;_current = new List<MyLinkedListNode<T, TK>>();
+                SetNextList();
                 return true;
             }
 
@@ -129,9 +132,27 @@ namespace MyLibrary.Collections
             return false;
         }
 
-        private void SetNext()
+        private void SetNextList()
         {
-            
+            if(_currentIndexHead<0 || changeIndexHead==true)
+            {
+               _currentIndexHead++;
+                _followingIndex = null;_followingIndex = new List<int>();
+            }
+
+            var currentNode = _head[_currentIndexHead];            
+
+            while(true)
+            {
+                _current.Add(currentNode);
+
+                if(currentNode.NextCount<1 || currentNode._next==null)
+                {
+                    break;
+                }
+                                
+                
+            }
         }
 
         private bool IsLast()
@@ -150,12 +171,12 @@ namespace MyLibrary.Collections
 
         public void Reset()
         {
-            _multipleIndex = null;
+            _followingIndex = null;
             int _countHead = _head.Count - 1;
 
             for (int n = 0; n <= _countHead; n++)
             {
-                _multipleIndex.Add(n, new List<int>());
+                _followingIndex.Add(n);
             }
         }
     }
