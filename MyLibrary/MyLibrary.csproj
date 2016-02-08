@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Class1.cs" />
     <Compile Include="Collections\Array.cs" />
+    <Compile Include="Collections\Grafo.cs" />
     <Compile Include="Collections\MyLinkedList.cs" />
     <Compile Include="Collections\MyList.cs" />
     <Compile Include="Extension\StringExtension.cs" />
