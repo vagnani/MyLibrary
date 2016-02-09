@@ -6,37 +6,49 @@ using System.Collections;
 
 namespace MyLibrary.Collections.Grafo
 {
-    public class MyLinkedList
+    public class MyLinkedList : IEnumerable<List<MyLinkedListNode>>
     {
-        internal List<MyLinkedListNode> _head;
+        internal MyLinkedListNode _first;
+        internal MyLinkedListNode _goal;
         internal int _count = 1;
+
+        public MyLinkedList(MyLinkedListNode first, MyLinkedListNode last)
+        {
+            _first = first; _goal = last;
+        }
+
+        public IEnumerator<List<MyLinkedListNode>> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    public class MyEnumerator: IEnumerator<List<MyLinkedListNode>>
+    public class MyEnumerator : IEnumerator<List<MyLinkedListNode>>
     {
-        private List<MyLinkedListNode> _head;
+        private MyLinkedListNode _first;
+        private MyLinkedListNode _last;
         private List<MyLinkedListNode> _current;
 
         private List<int> _followingIndex;
-        private int _currentIndexHead = -1;
+        private readonly int _countFirst;
 
         private bool stop = false;
         private bool changeIndexHead = false;
 
-        //ricordarsi di aumentare _currentIndex
         //ricordarsi di stop
-
+        #region other
         public MyEnumerator(MyLinkedList mylink)
         {
-            this._head = mylink._head;
-            int _countHead = _head.Count - 1;
+            this._first = mylink._first;
+            _last = mylink._goal;
+            _countFirst = _first.NextCount;
 
-            for (int n = 0; n <= _countHead; n++)
-            {
-                _followingIndex.Add(n);
-            }
         }
-
 
         object IEnumerator.Current
         {
@@ -62,81 +74,58 @@ namespace MyLibrary.Collections.Grafo
         {
             throw new NotImplementedException();
         }
+        #endregion
 
         public bool MoveNext()
         {
-            if (!IsLast())
+            if (_current == null | _current.Count <= 2)
             {
-                _current = null; _current = new List<MyLinkedListNode>();
-                SetNextList();
-                return true;
+                _current.Add(_first);
             }
 
-            stop = true;
-            return false;
-        }
 
-        private void SetNextList()
-        {
-            if (_currentIndexHead < 0 || changeIndexHead == true)
+            List<string> locked = new List<string>();
+            MyLinkedListNode current = null;
+
+            //Implementare aggiunta di tutte le classi     
+            //locked.Add(_first._next,false)
+            int _currentGrade =0;
+
+            while(true)
             {
-                _currentIndexHead++;
-                _followingIndex = null; _followingIndex = new List<int>();
-            }
+               _currentGrade++;
+               if(_currentGrade>_followingIndex.Count)
+               {
+                    for (int n = 0; n < current.NextCount; n++)
+                    {
+                        var currentName = current.Next(n).name;
 
-            var currentNode = _head[_currentIndexHead];
-            //numero di elementi passati
-            int position = -1;
-
-            while (true)
-            {
-                _current.Add(currentNode);
-
-                if (currentNode.NextCount < 1 || currentNode._next == null)
-                {
-                    break;
+                        if (locked.Contains(currentName)== false)
+                        {
+                            _followingIndex.Add(n);
+                            current = current.Next(n);
+                            _current.Add(current);
+                        }
+                    }
                 }
-                position++;
-                if (_followingIndex.Count <= position)
-                {
-                    _followingIndex.Add(0);
-                    _current.Add(currentNode);
-                }
-
             }
-        }
-
-        private bool IsLast()
-        {
-            var lastNodeHead = _head[_head.Count - 1];
-            int indexLast = lastNodeHead.PreviousCount - 1;
-            var last = lastNodeHead.Previous(indexLast);
-
-            if (_current.Equals(last))
-            {
-                return true;
-            }
+            
 
             return false;
         }
 
         public void Reset()
         {
-            _followingIndex = null; _followingIndex = new List<int>();
-            int _countHead = _head.Count - 1;
-
-            for (int n = 0; n <= _countHead; n++)
-            {
-                _followingIndex.Add(n);
-            }
+            throw new NotImplementedException();
         }
     }
 
+    //rivedre metodo di blocco (isLock) per muoversi
     public class MyLinkedListNode
     {
         internal List<MyLinkedListNode> _next;
         internal List<MyLinkedListNode> _prev;
-        internal bool _isLock=false;
+        internal bool _isLock = false;
         internal readonly string name;
         internal Dictionary<string, int> value;
 
@@ -146,30 +135,20 @@ namespace MyLibrary.Collections.Grafo
             this.value = value;
         }
 
-        public Tuple<bool,MyLinkedListNode> Next(int n)
+        public MyLinkedListNode Next(int n)
         {
-            if(!_isLock)
-            {
-                return new Tuple<bool, MyLinkedListNode>(true, _next[n]);
-            }
-
-            return null;
+            return _next[n];
         }
 
-        public Tuple<bool, MyLinkedListNode> Previous(int n)
+        public MyLinkedListNode Previous(int n)
         {
-            if (!_isLock)
-            {
-                return new Tuple<bool, MyLinkedListNode>(true, _prev[n]);
-            }
-
-            return null;
+            return _prev[n];
         }
 
         public override bool Equals(object obj)
         {
             MyLinkedListNode external = obj as MyLinkedListNode;
-            if(this.name.Equals(external.name))
+            if (this.name.Equals(external.name))
             { return true; }
 
             return false;
