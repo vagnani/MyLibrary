@@ -9,21 +9,60 @@ namespace MyLibrary.Collections.Grafo
     public class MyLinkedList : IEnumerable<List<MyLinkedListNode>>
     {
         internal MyLinkedListNode _first;
-        internal MyLinkedListNode _goal;        
+        internal MyLinkedListNode _goal;
+        internal List<MyLinkedListNode> _allNode;
 
         public MyLinkedList(MyLinkedListNode first, MyLinkedListNode last)
         {
             _first = first; _goal = last;
+            _allNode.Add(first);_allNode.Add(last);
+        }
+        
+        public MyLinkedListNode First
+        {
+            get
+            {
+                return _first;
+            }
+        }
+        public MyLinkedListNode Goal
+        {
+            get
+            {
+                return _goal;
+            }
         }
 
         public IEnumerator<List<MyLinkedListNode>> GetEnumerator()
         {
             return (IEnumerator<List<MyLinkedListNode>>)(new MyEnumerator(this));
         }
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public void AddAfter(MyLinkedListNode node, MyLinkedListNode newNode)
+        {
+            var found = _allNode.FindIndex(x => x.Equals(node));
+            _allNode[found]._next.Add(newNode);
+            if (!_allNode.Contains(newNode, newNode))
+                _allNode.Add(newNode);
+        }
+
+        public void AddBefore(MyLinkedListNode node, MyLinkedListNode newNode)
+        {
+            var found = _allNode.FindIndex(x => x.Equals(node));
+            _allNode[found]._prev.Add(newNode);
+            if (!_allNode.Contains(newNode, newNode))
+                _allNode.Add(newNode);
+        }
+
+        public void Add(MyLinkedListNode node)
+        {
+            _first._next.Add(node);
+            if (!_allNode.Contains(node, node))
+                _allNode.Add(node);
         }
     }
 
@@ -179,6 +218,10 @@ namespace MyLibrary.Collections.Grafo
             { return true; }
 
             return false;
+        }
+        public override string ToString()
+        {
+            return $"({name})";
         }
 
         #region interface
