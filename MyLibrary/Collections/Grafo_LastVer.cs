@@ -51,13 +51,13 @@ namespace MyLibrary.Collections.Grafo
                 _allNode.Add(newNode);
         }
 
-        public void AddBefore(MyLinkedListNode node, MyLinkedListNode newNode)
-        {
-            var found = _allNode.FindIndex(x => x.Equals(node));
-            _allNode[found]._prev.Add(newNode);
-            if (!_allNode.Contains(newNode, newNode))
-                _allNode.Add(newNode);
-        }
+        //public void AddBefore(MyLinkedListNode node, MyLinkedListNode newNode)
+        //{
+        //    var found = _allNode.FindIndex(x => x.Equals(node));
+        //    _allNode[found]._prev.Add(newNode);
+        //    if (!_allNode.Contains(newNode, newNode))
+        //        _allNode.Add(newNode);
+        //}
 
         public void Add(MyLinkedListNode node)
         {
