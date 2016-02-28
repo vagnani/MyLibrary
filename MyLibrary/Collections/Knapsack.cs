@@ -16,19 +16,42 @@ namespace MyLibrary.Collections
         public Knapsack(List<Element> elements)
         {
             _elements = elements;
-        }
+        }        
 
-        public List<Element> TheHighest(int number)
+        public Element TheHighest(int number,int maxWeight)
         {
             _listMax = new List<List<Element>>();
+            List<Element> itemNotOverMaxWeight = new List<Element>();                         
+
             _listMax.Add(new List<Element>() { _elements[0] });
             SetAll(new List<Element>() { _elements[0] }, number, 0);
 
-            throw new NotImplementedException();
+            FilterDouble();
 
-            return null;
+            foreach(var list in _listMax)
+            {
+                Element element = new Element();
+
+                foreach(var item in list)
+                {
+                    element += item;
+                }
+
+                if(element._weight<=maxWeight)
+                {
+                    itemNotOverMaxWeight.Add(element);
+                }
+            }
+
+            itemNotOverMaxWeight.Sort((x, y) => x._value.CompareTo(y._value));
+
+            return itemNotOverMaxWeight[itemNotOverMaxWeight.Count-1];
         }
 
+        private void FilterDouble()
+        {
+            throw new NotImplementedException();
+        }
 
         //private void SetAll(Coordinate _first, List<Coordinate> locked, int index)
         private void SetAll(List<Element> locked,int number, int index)
@@ -69,8 +92,7 @@ namespace MyLibrary.Collections
                 result.Add(n);
             }
             return result;
-        }
-
+        }        
 
         #region add string
 
@@ -162,10 +184,9 @@ namespace MyLibrary.Collections
         //    }
         //}           
         #endregion
-
     }
 
-        public struct Element
+    public struct Element
     {
         internal string _name;
         internal int _value;
@@ -178,17 +199,35 @@ namespace MyLibrary.Collections
             this._weight = weight;
         }
 
+        public override bool Equals(object obj1)
+        {
+            var obj = (Element)obj1;
+            return this._name.Equals(obj._name);
+        }
+        public override string ToString()
+        {
+            return $"[nomi={_name}, valore={_value}, peso={_weight}]";
+        }
+
         #region operatori (da definire)
         public static bool operator ==(Element ele1,Element ele2)
         {
             return false;
         }
-
         public static bool operator !=(Element ele1, Element ele2)
         {
             return false;
+        }        
+
+        public static Element operator +(Element item1,Element item2)
+        {
+            return new Element(item1._name + "+" + item2._name, item1._value + item2._value, item2._weight + item1._weight);
         }
+        public static Element operator -(Element item1, Element item2)
+        {
+            return new Element("("+item1._name + "-" + item2._name+")", item1._value - item2._value, item2._weight - item1._weight);
+        }        
         #endregion
-    }
+    }    
 }
 
