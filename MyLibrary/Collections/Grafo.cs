@@ -208,16 +208,7 @@ namespace MyLibrary.Collections.Grafo
             if (_index >= _finalList.Count)
                 return false;
             return true;
-        }
-
-        private void CheckRightList()
-        {
-            foreach (var node in _listMax)
-            {
-                if (node[node.Count - 1].Equals(_last))
-                { _finalList.Add(node); }
-            }
-        }
+        }        
 
         private void SetAll(MyLinkedListNode _first, List<MyLinkedListNode> locked, int index)
         {
@@ -243,12 +234,6 @@ namespace MyLibrary.Collections.Grafo
                 }
             }
         }
-
-        public void Reset()
-        {
-            _index = -1;
-        }
-
         private T CopyFrom<T>(T list) where T : class, IEnumerable, ICollection, IList, new()
         {
             T result = new T();
@@ -258,6 +243,19 @@ namespace MyLibrary.Collections.Grafo
             }
             return result;
         }
+        private void CheckRightList()
+        {
+            foreach (var node in _listMax)
+            {
+                if (node[node.Count - 1].Equals(_last))
+                { _finalList.Add(node); }
+            }
+        }
+
+        public void Reset()
+        {
+            _index = -1;
+        }        
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -350,14 +348,14 @@ namespace MyLibrary.Collections.Grafo
             {
                 return _next.Count;
             }
-        }
+        } //inutile
         public int PreviousCount
         {
             get
             {
                 return _prev.Count;
             }
-        }
+        } //inutile
     }
 }
 
