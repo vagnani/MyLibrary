@@ -9,15 +9,20 @@ namespace MyLibrary.Collections
 {
     public class Knapsack
     {
-        internal List<Element> _elements;        
+        internal List<Element> _elements;
         internal List<List<Element>> _listMax;
+        public string StringRappresentation { get; }
 
         private Knapsack() { }
-        public Knapsack(List<Element> elements):this()
+        public Knapsack(List<Element> elements) : this()
         {
             _elements = elements;
         }
-        public Knapsack(string str) : this(AddString(str)) { }
+        public Knapsack(string str)
+        {
+            StringRappresentation = str;
+            _elements = AddString(str);
+        }
 
         public Element TheHighest(int number, int maxWeight)
         {
@@ -50,8 +55,8 @@ namespace MyLibrary.Collections
             itemNotOverMaxWeight.Sort((x, y) => x._value.CompareTo(y._value));
 
             return itemNotOverMaxWeight[itemNotOverMaxWeight.Count - 1];
-        }        
-        
+        }
+
         private void SetAll(List<Element> locked, int number, int index)
         {
             var copyListMax = CopyFrom(_listMax[index]);
@@ -85,7 +90,7 @@ namespace MyLibrary.Collections
             return result;
         }
 
-        private static List<Element> AddString(string str)
+        private List<Element> AddString(string str)
         {
             char excluded1 = '(';
             char excluded2 = ')';
@@ -125,14 +130,14 @@ namespace MyLibrary.Collections
                 all.Add(temp);
             }
 
-            foreach(var item in all)
+            foreach (var item in all)
             {
                 int value = Convert.ToInt32(item[1]);
                 int weight = Convert.ToInt32(item[2]);
                 finalAll.Add(new Element(item[0], value, weight));
             }
             return finalAll;
-        }        
+        }
     }
 
     public struct Element
