@@ -12,32 +12,35 @@ namespace MyLibrary.Collections
         internal List<Element> _elements;
         internal List<List<Element>> _listMax;
 
-        public Knapsack() { }
+        private Knapsack() { }
         public Knapsack(List<Element> elements)
         {
             _elements = elements;
-        }        
+        }
 
-        public Element TheHighest(int number,int maxWeight)
+        public Element TheHighest(int number, int maxWeight)
         {
             _listMax = new List<List<Element>>();
-            List<Element> itemNotOverMaxWeight = new List<Element>();                         
+            List<Element> itemNotOverMaxWeight = new List<Element>();
 
-            _listMax.Add(new List<Element>() { _elements[0] });
-            SetAll(new List<Element>() { _elements[0] }, number, 0);
+            foreach (var item in _elements)
+            {
+                _listMax.Add(new List<Element>() { item });
+                SetAll(new List<Element>() { item }, number, _listMax.Count - 1);
+            }
 
             FilterDouble();
 
-            foreach(var list in _listMax)
+            foreach (var list in _listMax)
             {
                 Element element = new Element();
 
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     element += item;
                 }
 
-                if(element._weight<=maxWeight)
+                if (element._weight <= maxWeight)
                 {
                     itemNotOverMaxWeight.Add(element);
                 }
@@ -45,42 +48,35 @@ namespace MyLibrary.Collections
 
             itemNotOverMaxWeight.Sort((x, y) => x._value.CompareTo(y._value));
 
-            return itemNotOverMaxWeight[itemNotOverMaxWeight.Count-1];
+            return itemNotOverMaxWeight[itemNotOverMaxWeight.Count - 1];
         }
 
         private void FilterDouble()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         //private void SetAll(Coordinate _first, List<Coordinate> locked, int index)
-        private void SetAll(List<Element> locked,int number, int index)
+        private void SetAll(List<Element> locked, int number, int index)
         {
             var copyListMax = CopyFrom(_listMax[index]);
             int copyIndex = index;
 
-            if (_listMax[index].Count < number)
+            foreach (var item in _elements)
             {
-                foreach (var item in _elements)
+                if (_listMax[copyIndex].Count < number && !locked.Contains(item))
                 {
-                    if (_listMax[index].Count < number)
+                    List<Element> copyLocked = CopyFrom(locked);
+                    if (copyIndex != index)
                     {
-                        List<Element> copyLocked = CopyFrom(locked);
-
-                        if (!locked.Contains(item))
-                        {
-                            if (copyIndex != index)
-                            {
-                                _listMax.Add(new List<Element>(copyListMax));
-                                copyIndex = _listMax.Count - 1;
-                            }
-
-                            _listMax[copyIndex].Add(item);
-                            copyLocked.Add(item);
-                            SetAll(copyLocked, number, copyIndex);
-                            index++;
-                        }
+                        _listMax.Add(new List<Element>(copyListMax));
+                        copyIndex = _listMax.Count - 1;
                     }
+
+                    _listMax[copyIndex].Add(item);
+                    copyLocked.Add(item);
+                    SetAll(copyLocked, number, copyIndex);
+                    index++;
                 }
             }
         }
@@ -92,7 +88,7 @@ namespace MyLibrary.Collections
                 result.Add(n);
             }
             return result;
-        }        
+        }
 
         #region add string
 
@@ -192,7 +188,7 @@ namespace MyLibrary.Collections
         internal int _value;
         internal int _weight;
 
-        public Element(string name,int value,int weight)
+        public Element(string name, int value, int weight)
         {
             this._name = name;
             this._value = value;
@@ -210,24 +206,24 @@ namespace MyLibrary.Collections
         }
 
         #region operatori (da definire)
-        public static bool operator ==(Element ele1,Element ele2)
+        public static bool operator ==(Element ele1, Element ele2)
         {
             return false;
         }
         public static bool operator !=(Element ele1, Element ele2)
         {
             return false;
-        }        
+        }
 
-        public static Element operator +(Element item1,Element item2)
+        public static Element operator +(Element item1, Element item2)
         {
             return new Element(item1._name + "+" + item2._name, item1._value + item2._value, item2._weight + item1._weight);
         }
         public static Element operator -(Element item1, Element item2)
         {
-            return new Element("("+item1._name + "-" + item2._name+")", item1._value - item2._value, item2._weight - item1._weight);
-        }        
+            return new Element("(" + item1._name + "-" + item2._name + ")", item1._value - item2._value, item2._weight - item1._weight);
+        }
         #endregion
-    }    
+    }
 }
 
