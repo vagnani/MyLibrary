@@ -193,23 +193,30 @@ namespace MyLibrary.Collections.Grafo
         {
             this._first = mylink._first;
             _last = mylink._goal;
+
+            _listMax.Add(new List<MyLinkedListNode>() { _first });
+            SetAll(_first, new List<MyLinkedListNode>() { _first }, _listMax.Count - 1);
+            CheckRightList();
         }
 
         public bool MoveNext()
         {
-            if (_index < 0) //_listMax.Count<1
+            if (_index < _finalList.Count - 1)//insicuro, fare + test
             {
-                _listMax.Add(new List<MyLinkedListNode>() { _first });
-                SetAll(_first, new List<MyLinkedListNode>() { _first }, _listMax.Count - 1);
-                CheckRightList();
+                _index++;
+                return true;
             }
-            _index++;
+            return false;
+        }
 
-            if (_index >= _finalList.Count)
-                return false;
-            return true;
-        }        
-
+        private void CheckRightList()
+        {
+            foreach (var node in _listMax)
+            {
+                if (node[node.Count - 1].Equals(_last))
+                { _finalList.Add(node); }
+            }
+        }
         private void SetAll(MyLinkedListNode _first, List<MyLinkedListNode> locked, int index)
         {
             var copyListMax = CopyFrom(_listMax[index]);
@@ -243,19 +250,11 @@ namespace MyLibrary.Collections.Grafo
             }
             return result;
         }
-        private void CheckRightList()
-        {
-            foreach (var node in _listMax)
-            {
-                if (node[node.Count - 1].Equals(_last))
-                { _finalList.Add(node); }
-            }
-        }
 
         public void Reset()
         {
             _index = -1;
-        }        
+        }
 
         #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
@@ -348,14 +347,14 @@ namespace MyLibrary.Collections.Grafo
             {
                 return _next.Count;
             }
-        } //inutile
+        }
         public int PreviousCount
         {
             get
             {
                 return _prev.Count;
             }
-        } //inutile
+        }
     }
 }
 

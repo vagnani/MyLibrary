@@ -43,6 +43,7 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Collections\Array.cs" />
     <Compile Include="Collections\Chess.cs" />
+    <Compile Include="Collections\General.cs" />
     <Compile Include="Collections\Grafo.cs" />
     <Compile Include="Collections\Knapsack.cs" />
     <Compile Include="Collections\MyList.cs" />
