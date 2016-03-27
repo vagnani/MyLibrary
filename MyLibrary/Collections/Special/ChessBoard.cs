@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyLibrary.Collections
+namespace MyLibrary.Collections.Special
 {
     public class MyChessBoard : IEnumerable<List<Coordinate>>
     {
@@ -14,7 +14,6 @@ namespace MyLibrary.Collections
 
         internal Coordinate _limit;
         internal List<Coordinate> _locked;
-        //da implementare in main Dictionary<string, Coordinate> _award; <==stava anche nel costruttore
         internal List<string> _directions;
 
         private MyChessBoard() { }
@@ -38,7 +37,7 @@ namespace MyLibrary.Collections
     {
         private int index = -1;
         private List<List<Coordinate>> _listMax = new List<List<Coordinate>>();
-        private List<List<Coordinate>> final = new List<List<Coordinate>>();
+        public List<List<Coordinate>> final = new List<List<Coordinate>>();
         private MyChessBoard chess;
 
         public MyEnumerator(MyChessBoard chess)
@@ -47,15 +46,6 @@ namespace MyLibrary.Collections
             _listMax.Add(new List<Coordinate>() { chess._start });
             SetAll(chess._start, new List<Coordinate>() { chess._start }, 0);
             CheckTheRight();
-        }
-
-        private void CheckTheRight()
-        {
-            foreach (var element in _listMax)
-            {
-                if (element[element.Count - 1].Equals(chess._arrive))
-                    final.Add(element);
-            }
         }
 
         public List<Coordinate> Current
@@ -85,35 +75,41 @@ namespace MyLibrary.Collections
             return false;
         }
 
-        private void SetAll(Coordinate _first, List<Coordinate> locked, int index)
+        //principio di funzionamento: accodare gli altri elementi
+        private void SetAll(Coordinate first, List<Coordinate> locked, int index)
         {
             var copyListMax = CopyFrom(_listMax[index]);
             int copyIndex = index;
 
             foreach (var nodePossible in chess._directions)
             {
-                List<Coordinate> copyLocked = CopyFrom(locked);
-                var possibleCoordinate = MoveByDirection(nodePossible, _first);
+                //in base alle direzioni possibli creo un realtivo oggetto modificando le coordinate 
+                var possibleCoordinate = MoveInDirection(nodePossible, first);
 
+                //verifico se le nuove coordinate sono maggiori di 0, minori o uguali ai limiti del campo
+                //e se le sue coordinate non sono le stesse di una cella interdetta o gia fatta/passata
                 if (possibleCoordinate.x <= chess._limit.x && possibleCoordinate.y <= chess._limit.y &&
-                    !chess._locked.Contains(possibleCoordinate, possibleCoordinate) &&
-                    !locked.Contains(possibleCoordinate, possibleCoordinate) &&
+                    chess._locked.Contains(possibleCoordinate, possibleCoordinate) == false &&
+                    locked.Contains(possibleCoordinate, possibleCoordinate) == false &&
                     possibleCoordinate.x > 0 && possibleCoordinate.y > 0)
                 {
+                    List<Coordinate> copyLocked = CopyFrom(locked);
+
                     if (copyIndex != index)
                     {
-                        _listMax.Add(new List<Coordinate>(copyListMax));
+                        _listMax.Add(CopyFrom(copyListMax));
                         copyIndex = _listMax.Count - 1;
                     }
 
                     _listMax[copyIndex].Add(possibleCoordinate);
                     copyLocked.Add(possibleCoordinate);
                     SetAll(possibleCoordinate, copyLocked, copyIndex);
-                    index++;
+                    index = -1;
                 }
             }
         }
-        private Coordinate MoveByDirection(string direction, Coordinate coor)
+        //metodi utili 
+        private Coordinate MoveInDirection(string direction, Coordinate coor)
         {
             #region est 
             if (direction == "nne")
@@ -170,7 +166,17 @@ namespace MyLibrary.Collections
             }
             return result;
         }
+        //controlla se le coordinate dell'ultimo oggetto di ogni lista siano uguali alle coordinate di arrivo
+        private void CheckTheRight()
+        {
+            foreach (var element in _listMax)
+            {
+                if (element[element.Count - 1].Equals(chess._arrive))
+                    final.Add(element);
+            }
+        }
 
+        //il resto da supporto per il foreach
         public void Reset()
         {
             index = -1;
@@ -285,6 +291,7 @@ namespace MyLibrary.Collections
         #endregion
     }
 
+    //oggetto che trasforma le stringhe in oggetti utilizzabili da un oggetto chess
     public static class Adding
     {
         public static Coordinate CreateCoordinateByString(string str)
@@ -354,8 +361,8 @@ namespace MyLibrary.Collections
                         temp.Add(name);
                         break;
                     }
-                    lockedString.Add(temp);
                 }
+                lockedString.Add(temp);
             }
 
             foreach (var element in lockedString)
@@ -397,13 +404,13 @@ namespace MyLibrary.Collections
             return directions;
         }
 
-        public static Dictionary<string, Coordinate> CreateAwards(string str)
+        public static Dictionary<Coordinate, int> CreateAwards(string str)
         {
             char excluded1 = '(';
             char excluded2 = ')';
             char excluded3 = ',';
             List<List<string>> all = new List<List<string>>();
-            Dictionary<string, Coordinate> finalAll = new Dictionary<string, Coordinate>();
+            Dictionary<Coordinate, int> finalAll = new Dictionary<Coordinate, int>();
 
             str.Trim();
 
@@ -439,9 +446,10 @@ namespace MyLibrary.Collections
 
             foreach (var item in all)
             {
-                int x = Convert.ToInt32(item[1]);
-                int y = Convert.ToInt32(item[2]);
-                finalAll.Add(item[0], new Coordinate(x, y));
+                int x = Convert.ToInt32(item[0]);
+                int y = Convert.ToInt32(item[1]);
+                int value = Convert.ToInt32(item[2]);
+                finalAll.Add(new Coordinate(x, y), value);
             }
             return finalAll;
         }

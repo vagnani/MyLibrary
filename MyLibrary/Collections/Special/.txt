@@ -1,0 +1,4 @@
+﻿in this folder these classes are only the core. 
+If you want the implementation through Main (the entry point) you must see the other solutions in:
+ 1. folder c:\users\alessandro\development\visual studio\projects\problem solving
+ 2. github

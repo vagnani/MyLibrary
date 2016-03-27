@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyLibrary.Collections
+namespace MyLibrary.Collections.Special
 {
     public class Knapsack
     {
@@ -32,11 +32,12 @@ namespace MyLibrary.Collections
             foreach (var item in _elements)
             {
                 _listMax.Add(new List<Element>() { item });
+                //invoca il metodo che trova tutti i percorsi, passandogli un oggetto casuale
                 SetAll(new List<Element>() { item }, number, _listMax.Count - 1);
             }
 
-            //FilterDouble(); <-- per controllare tra i doppioni:inutile
-
+            //tutti gli oggetti che compongono una determinata lista li riunisco in un unico oggetto
+            //cosi verifico subito se il loro peso complessivo è minore o uguale di quello richiesto
             foreach (var list in _listMax)
             {
                 Element element = new Element();
@@ -52,16 +53,20 @@ namespace MyLibrary.Collections
                 }
             }
 
+            //if usato per caso eccezzionale: non esiste una lista che soddisfa quello richiesto
             if (itemNotOverMaxWeight.Count < 1)
             {
                 return new Element("lista non trovata", 0, 0);
             }
 
+            //ordina gli elementi in modo crescente
             itemNotOverMaxWeight.Sort((x, y) => x._value.CompareTo(y._value));
 
             return itemNotOverMaxWeight[itemNotOverMaxWeight.Count - 1];
         }
 
+        //metodo che con ricorsione trova tutte le possibli combinazioni
+        //number sono il numero di minerali/oggetti massimi
         private void SetAll(List<Element> locked, int number, int index)
         {
             var copyListMax = CopyFrom(_listMax[index]);
@@ -70,9 +75,11 @@ namespace MyLibrary.Collections
 
             foreach (var item in _elements)
             {
+                //verifica se ho (/sto per) raggiunto il numero massimo o se è un oggetto gia usato
                 if (countList < number && !locked.Contains(item))
                 {
                     List<Element> copyLocked = CopyFrom(locked);
+                    //stratagemma al fine di continuare sulla stessa lista al momento dell'invocazone del metodo    
                     if (copyIndex != index)
                     {
                         _listMax.Add(new List<Element>(copyListMax));
@@ -82,10 +89,11 @@ namespace MyLibrary.Collections
                     _listMax[copyIndex].Add(item);
                     copyLocked.Add(item);
                     SetAll(copyLocked, number, copyIndex);
-                    index++;
+                    index = -1;
                 }
             }
         }
+        //metodo di utilità
         private T CopyFrom<T>(T list) where T : class, IEnumerable, ICollection, IList, new()
         {
             T result = new T();
@@ -96,6 +104,7 @@ namespace MyLibrary.Collections
             return result;
         }
 
+        //da string aggiunge oggetti alla classe
         private List<Element> AddString(string str)
         {
             char excluded1 = '(';
@@ -167,7 +176,7 @@ namespace MyLibrary.Collections
         }
         public override string ToString()
         {
-            return $"[nomi={_name}, valore={_value}, peso={_weight}]";
+            return $"[nomi= {_name} | valore={_value} | peso={_weight}]";
         }
         #endregion
 
@@ -183,7 +192,7 @@ namespace MyLibrary.Collections
 
         public static Element operator +(Element item1, Element item2)
         {
-            return new Element(item1._name + "+" + item2._name, item1._value + item2._value, item2._weight + item1._weight);
+            return new Element(item1._name + "," + item2._name, item1._value + item2._value, item2._weight + item1._weight);
         }
         public static Element operator -(Element item1, Element item2)
         {
