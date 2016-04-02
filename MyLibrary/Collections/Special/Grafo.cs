@@ -5,7 +5,7 @@ using System.Collections;
 
 namespace MyLibrary.Collections.Special
 {
-    public class MyLinkedList : IEnumerable<List<MyLinkedListNode>>
+    public class Grafo : IEnumerable<List<MyLinkedListNode>>
     {
         //nodo sorgente
         internal MyLinkedListNode _first;
@@ -15,7 +15,7 @@ namespace MyLibrary.Collections.Special
         //rappresentazione sotto forma di string della variabile sopra al fine di trovare l'indice di oggetti già esistenti
         internal List<string> _allNodeString;
 
-        public MyLinkedList(MyLinkedListNode first, MyLinkedListNode last)
+        public Grafo(MyLinkedListNode first, MyLinkedListNode last)
         {
             _first = first; _goal = last;
             _allNode = new List<MyLinkedListNode>();
@@ -41,7 +41,7 @@ namespace MyLibrary.Collections.Special
 
         public IEnumerator<List<MyLinkedListNode>> GetEnumerator()
         {
-            return (IEnumerator<List<MyLinkedListNode>>)(new MyEnumerator(this));
+            return (IEnumerator<List<MyLinkedListNode>>)(new MyEnumeratorGrafo(this));
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -247,7 +247,7 @@ namespace MyLibrary.Collections.Special
         }
     }
 
-    public class MyEnumerator : IEnumerator<List<MyLinkedListNode>>
+    public class MyEnumeratorGrafo : IEnumerator<List<MyLinkedListNode>>
     {
         //nodo sorgente
         private MyLinkedListNode _first;
@@ -277,7 +277,7 @@ namespace MyLibrary.Collections.Special
             }
         }
 
-        public MyEnumerator(MyLinkedList mylink)
+        public MyEnumeratorGrafo(Grafo mylink)
         {
             this._first = mylink._first;
             _last = mylink._goal;

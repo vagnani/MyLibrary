@@ -40,7 +40,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Collections\Array.cs" />
     <Compile Include="Collections\Special\ChessBoard.cs" />
     <Compile Include="Collections\Special\Grafo.cs" />
@@ -48,9 +47,7 @@
     <Compile Include="Collections\MyList.cs" />
     <Compile Include="Extension\StringExtension.cs" />
     <Compile Include="Maths\Fraction.cs" />
-    <Compile Include="Maths\IntExtension_Factorization.cs" />
-    <Compile Include="Maths\IntExtension_MCD.cs" />
-    <Compile Include="Maths\IntExtension_mcm.cs" />
+    <Compile Include="Maths\Factorization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

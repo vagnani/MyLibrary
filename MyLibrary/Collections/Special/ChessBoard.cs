@@ -25,7 +25,7 @@ namespace MyLibrary.Collections.Special
 
         public IEnumerator<List<Coordinate>> GetEnumerator()
         {
-            return new MyEnumerator(this);
+            return new MyEnumeratorChess(this);
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -33,14 +33,14 @@ namespace MyLibrary.Collections.Special
         }
     }
 
-    public class MyEnumerator : IEnumerator<List<Coordinate>>
+    public class MyEnumeratorChess : IEnumerator<List<Coordinate>>
     {
         private int index = -1;
         private List<List<Coordinate>> _listMax = new List<List<Coordinate>>();
         public List<List<Coordinate>> final = new List<List<Coordinate>>();
         private MyChessBoard chess;
 
-        public MyEnumerator(MyChessBoard chess)
+        public MyEnumeratorChess(MyChessBoard chess)
         {
             this.chess = chess;
             _listMax.Add(new List<Coordinate>() { chess._start });
